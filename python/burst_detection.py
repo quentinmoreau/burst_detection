@@ -85,7 +85,7 @@ def fwhm_burst_norm(tf, peak):
     return right_loc, left_loc, up_loc, down_loc
 
 
-def extract_bursts(raw_trials, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq, beh_ix=None, w_size=.2):
+def extract_bursts(raw_trials, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq, w_size=.2):
     """
     Extract bursts from epoched data
     :param raw_trials: raw data for each trial (trial x time)
@@ -256,11 +256,8 @@ def extract_bursts(raw_trials, tf, times, search_freqs, band_lims, aperiodic_spe
                                     len(peak_dists) > 0 and np.min(peak_dists) < np.min(trough_dists)):
                                 burst *= -1.0
                                 polarity = 1
-                            if (beh_ix is not None) and (type(beh_ix) == list) and (len(beh_ix) == len(tf)):
-                                bursts['trial'].append(int(beh_ix[t_idx]))
-                            else:
-                                bursts['trial'].append(int(t_idx))
 
+                            bursts['trial'].append(int(t_idx))
                             bursts['waveform'].append(burst)
                             bursts['peak_freq'].append(peak_freq)
                             bursts['peak_amp_iter'].append(peak_amp_iter)
