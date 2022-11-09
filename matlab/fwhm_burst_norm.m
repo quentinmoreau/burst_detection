@@ -1,29 +1,45 @@
-function [right_loc, left_loc, up_loc, down_loc]=fwhm_burst_norm(TF, peak)
-    half=TF(peak(1),peak(2))/2;
+function [right_loc, left_loc, up_loc, down_loc]=fwhm_burst_norm(tf, peak)
+% FWHM_BURST_NORM  Find two-dimensional FWHM
+%   tf: TF spectrum
+%   peak: peak of activity [freq, time]
+% returns: right, left, up, down limits for FWM
+
+    half=tf(peak(1),peak(2))/2;
+    
     right_loc = NaN;
-    cand=find(TF(peak(1),peak(2):end)<=half);
-    if length(cand)>0
+    % Find right limit (values to right of peak less than half value at
+    % peak)
+    cand=find(tf(peak(1),peak(2):end)<=half);
+    % If any found, take the first one
+    if ~isempty(cand)
         right_loc=cand(1);
     end
 
     up_loc = NaN;
-    cand=find(TF(peak(1):end, peak(2)) <= half);
-    if length(cand)>0
+    % Find up limit (values above peak less than half value at peak)
+    cand=find(tf(peak(1):end, peak(2)) <= half);
+    % If any found, take the first one
+    if ~isempty(cand)
         up_loc=cand(1);
     end
 
     left_loc = NaN;
-    cand=find(TF(peak(1),1:peak(2)-1)<=half);
-    if length(cand)>0
+    % Find left limit (values below peak less than half value at peak)
+    cand=find(tf(peak(1),1:peak(2)-1)<=half);
+    % If any found, take the last one
+    if ~isempty(cand)
         left_loc = peak(2)-cand(end);
     end
 
     down_loc = NaN;
-    cand=find(TF(1:peak(1)-1,peak(2))<=half);
-    if length(cand)>0
+    % Find down limit (values below peak less than half value at peak)
+    cand=find(tf(1:peak(1)-1,peak(2))<=half);
+    % If any found, take the last one
+    if ~isempty(cand)
         down_loc = peak(1)-cand(end);
     end
 
+    % Set arms equal if only one found
     if isnan(down_loc)
         down_loc = up_loc;
     end
@@ -37,6 +53,8 @@ function [right_loc, left_loc, up_loc, down_loc]=fwhm_burst_norm(TF, peak)
         right_loc = left_loc;
     end
 
+    % Use the minimum arm in each direction (forces Gaussian to be
+    % symmetric in each dimension)
     horiz = min([left_loc, right_loc]);
     vert = min([up_loc, down_loc]);
     right_loc = horiz;
