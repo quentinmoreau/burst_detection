@@ -35,7 +35,8 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
     bursts.fwhm_freq=[];
     bursts.fwhm_time=[];
     bursts.polarity=[];
-
+    bursts.waveform_times = [];
+    
     % Grid for computing 2D Gaussians
     [x_idx, y_idx] = meshgrid(1:length(times), 1:length(search_freqs));
 
@@ -118,7 +119,7 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
             
             dc=mean(raw_signal);
             % Pad with 1s on either side
-            padded_data=[repmat(dc, 1, sfreq) raw_signal repmat(dc, 1, sfreq)];
+            padded_data=[dc*ones(1, sfreq) repmat(dc, 1, sfreq) raw_signal repmat(dc, 1, sfreq)];
             filtered = ft_preproc_bandpassfilter(padded_data, sfreq,...
                 search_freqs(freq_range), 6, 'but', 'twopass', 'reduce');       
             filtered=filtered(sfreq+1:sfreq+length(raw_signal));
@@ -128,15 +129,17 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
             % Get phase
             instantaneous_phase = mod(unwrap(angle(analytic_signal)), pi);
             
-            % Find phase local minima (near 0)
-            [~,zero_phase_pts]= findpeaks(-1*instantaneous_phase);
-            
-            % Find local phase minima with negative deflection closest to
-            % TF peak
-            [~,min_idx]=min(abs((dur(2) - dur(1)) * .5 - zero_phase_pts));
-            closest_pt = zero_phase_pts(min_idx);
-            new_peak_time_idx = dur(1) + closest_pt;
-            adjustment = (new_peak_time_idx - peak_time_idx) * 1 / sfreq;
+            % Find local phase minima with negative deflection closest to TF peak
+            % If no minimum is found, the error is caught and no burst is added
+            zero_phase_pts= localmaxima(-1*instantaneous_phase);
+            if isempty(zero_phase_pts)
+                adjustment=inf;
+            else
+                [~,min_idx]=min(abs((dur(2) - dur(1)) * .5 - zero_phase_pts));
+                closest_pt = zero_phase_pts(min_idx);
+                new_peak_time_idx = dur(1) + closest_pt;
+                adjustment = (new_peak_time_idx - peak_time_idx) * 1 / sfreq;
+            end
 
             % Keep if adjustment less than 30ms
             if abs(adjustment) < .03
@@ -162,12 +165,12 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
                         burst = raw_trial(new_peak_time_idx - half_wlen:new_peak_time_idx + half_wlen);
                         % Remove DC offset
                         burst = burst - mean(burst);
-                        burst_times = times(new_peak_time_idx - half_wlen:new_peak_time_idx + half_wlen) - times(new_peak_time_idx);
+                        bursts.waveform_times = times(new_peak_time_idx - half_wlen:new_peak_time_idx + half_wlen) - times(new_peak_time_idx);
 
                         % Flip if positive deflection
-                        [~,peak_idxs]= findpeaks(filtered);                        
+                        peak_idxs= localmaxima(filtered);                        
                         peak_dists = abs(peak_idxs - closest_pt);
-                        [~,trough_idxs]= findpeaks(-1*filtered);                        
+                        trough_idxs= localmaxima(-1*filtered);                        
                         trough_dists = abs(trough_idxs - closest_pt);
 
                         polarity=0;
@@ -192,5 +195,4 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
 
         trial_tf_iter = new_trial_TF_iter;
     end
-    bursts.waveform_times = burst_times;
 end

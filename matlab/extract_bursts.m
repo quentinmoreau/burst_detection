@@ -36,6 +36,7 @@ function bursts=extract_bursts(raw_trials, tf, times, search_freqs,...
     bursts.fwhm_freq=[];
     bursts.fwhm_time=[];
     bursts.polarity=[];
+    bursts.waveform_times=[];
     
     % Compute event-related signal
     erf = mean(raw_trials);
@@ -46,26 +47,29 @@ function bursts=extract_bursts(raw_trials, tf, times, search_freqs,...
 
         % Regress out ERF
         lm=fitlm(erf, raw_trials(t_idx,:));
-        raw_trial=lm.Residuals.Raw;
+        raw_trial=lm.Residuals.Raw';
 
         % Extract bursts for this trial
         trial_bursts=extract_bursts_single_trial(raw_trial, tr_tf, times,...
             search_freqs, band_lims, fooof_thresh, sfreq, 'win_size',...
             params.win_size);
         
-        n_trial_bursts=len(trial_bursts.peak_time);
+        n_trial_bursts=length(trial_bursts.peak_time);
         bursts.trial(end+1:end+n_trial_bursts)=t_idx;
         bursts.waveform(end+1:end+n_trial_bursts,:)=trial_bursts.waveform;
         bursts.peak_freq(end+1:end+n_trial_bursts)=trial_bursts.peak_freq;
         bursts.peak_amp_iter(end+1:end+n_trial_bursts)=trial_bursts.peak_amp_iter;
         bursts.peak_amp_base(end+1:end+n_trial_bursts)=trial_bursts.peak_amp_base;
         bursts.peak_time(end+1:end+n_trial_bursts)=trial_bursts.peak_time;
-        bursts.peak_adjustment(end+1:end+n_trial_bursts)=trial_bursts.adjustment;
-        bursts.fwhm_freq(end+1:end+n_trial_bursts)=trial_bursts.fwhm_f;
-        bursts.fwhm_time(end+1:end+n_trial_bursts)=trial_bursts.fwhm_t;
+        bursts.peak_adjustment(end+1:end+n_trial_bursts)=trial_bursts.peak_adjustment;
+        bursts.fwhm_freq(end+1:end+n_trial_bursts)=trial_bursts.fwhm_freq;
+        bursts.fwhm_time(end+1:end+n_trial_bursts)=trial_bursts.fwhm_time;
         bursts.polarity(end+1:end+n_trial_bursts)=trial_bursts.polarity;
+        if ~isempty(trial_bursts.waveform_times)
+            bursts.waveform_times = trial_bursts.waveform_times;
+        end
     end
-    bursts.waveform_times = trial_bursts.waveform_times;
+    
 end
 
 
