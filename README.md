@@ -35,67 +35,67 @@ bursts = extract_bursts(
 ```python
 bursts_single_trial = extract_bursts_single_trial(
     raw_trial, tf, times, search_freqs, 
-    band_lims, aperiodic_spectrum, sfreq, w_size=.2
+    band_lims, aperiodic_spectrum, sfreq, w_size=.26
 )
 ```
-+
-A single trial burst extraction. Single trial time-course, and single trial 
+
+>A single trial burst extraction. Single trial time-course, and single trial 
 time-frequency. No regressing out the average ERF. Potentially 7-10 Hz high-pass 
 of the time domain trial can get rid of evoked response related burst shape distortions.
-+
+
 
 #### Arguments:
 
 `raw_trials: raw data for each trial (trial x time)`
-+
-Array of trials from a single channel in time domain.
-+
+
+>Array of trials from a single channel in time domain.
+
 
 
 `tf: time-frequency decomposition for each trial (trial x freq x time)`
-+
-Array of time-frequency data from a single channel. If the targeted range 
+
+>Array of time-frequency data from a single channel. If the targeted range 
 of frequencies is 13-30 Hz, it is recommended to select the TF with at least 3 
 Hz buffer (10-33 Hz). Recommended use of superlet (Moca et al., 2021) 
 transformed data.
-+
+
 
 `times: time steps`
-+
-Time points of the `raw_trials` and `tf` should be equivalent
-+
+
+>Time points of the `raw_trials` and `tf` should be equivalent
+
 
 
 `search_freqs: frequency limits to search within for bursts (should be wider than band_lims)`
-+
-List of frequencies corresponding to the selected ones in `tf`.
-+
+
+>List of frequencies corresponding to the selected ones in `tf`.
+
 
 
 `band_lims: keep bursts whose peak frequency falls within these limits`
-+
-The actual target frequency range. Bursts with peak frequency beyond this range
+
+>The actual target frequency range. Bursts with peak frequency beyond this range
 will be discarded.
-+
+
 
 
 `aperiodic_spectrum: aperiodic spectrum`
-+
-Assuming the PSD was calculated based on the TF data averaged over time, the
+
+>Assuming the PSD was calculated based on the TF data averaged over time, the
 frequency resolution of the PSD and TF should be the same. 
-+
+
 
 
 `sfreq: sampling rate`
-+
-Assuming the sampling rate is the same for `raw_trials` and `TF`
-+
+
+>Assuming the sampling rate is the same for `raw_trials` and `TF`
+
 
 
 `w_size=.2: size of the burst window in time domain`
-+
-Default argument. Window size based on lagged coherence of the MEG data.
-+
+
+>Default argument. Window size based on lagged coherence of the MEG data.
+
 
 
 #### Output:
