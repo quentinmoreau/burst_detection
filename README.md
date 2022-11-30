@@ -23,7 +23,7 @@ numpy
 from burst_detection import extract_bursts
 ```
 
-\
+
 
 
 ```python
@@ -32,7 +32,8 @@ bursts = extract_bursts(
     band_lims, aperiodic_spectrum, sfreq, w_size=.26
 )
 ```
-\
+
+
 
 
 ```python
@@ -46,7 +47,8 @@ bursts_single_trial = extract_bursts_single_trial(
 time-frequency. No regressing out the average ERF. Potentially 7-10 Hz high-pass 
 of the time domain trial can get rid of evoked response related burst shape distortions.
 
-\
+
+
 #### Arguments:
 
 `raw_trials: raw data for each trial (trial x time)`
