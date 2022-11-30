@@ -144,9 +144,9 @@ domain waveforms.
 
 `fwhm_time` duration of the burst
 
-`polarity` 0 - the polarity was not flipped, 1 - polarity was fipped
+`polarity` 0 - the polarity was not flipped, 1 - polarity was flipped
 
-`waveform_times` a 1d array containing the timepoints for a waveform
+`waveform_times` 1d array containing the timepoints for a waveform
 
 
 ## MATLAB
@@ -158,8 +158,11 @@ Fieldtrip
 
 ### USAGE
 ```
-function bursts=extract_bursts(raw_trials, tf, times, search_freqs,...
-    band_lims, fooof_thresh, sfreq, varargin)
+bursts = extract_bursts(raw_trials, tf, times, search_freqs, band_lims, fooof_thresh, sfreq)
+```
+
+```
+bursts = extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, fooof_thresh, sfreq)
 ```
 
 #### Arguments:
