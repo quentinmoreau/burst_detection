@@ -269,7 +269,7 @@ def extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, a
     return bursts
 
 
-def extract_bursts(raw_trials, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq, w_size=.2):
+def extract_bursts(raw_trials, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq, w_size=.26):
     """
     Extract bursts from epoched data
     :param raw_trials: raw data for each trial (trial x time)
