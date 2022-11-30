@@ -85,7 +85,7 @@ def fwhm_burst_norm(tf, peak):
     return right_loc, left_loc, up_loc, down_loc
 
 
-def extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq, w_size=.2):
+def extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq, w_size=.26):
     """
     Extract bursts from epoched data
     :param raw_trial: raw data for trial (time)
