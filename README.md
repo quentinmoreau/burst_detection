@@ -133,8 +133,8 @@ domain waveforms.
 
 `peak_amp_iter` relative TF amplitude of the burst during the iterations
 
-`peak_amp_base` absolute TF amplitude of the burst (with the FOOOF threshold
- subtracted)
+`peak_amp_base` absolute TF amplitude of the burst (with the aperiodic
+ spectrum subtracted)
 
 `peak_time` TF peak time of the burst
 
@@ -158,11 +158,11 @@ Fieldtrip
 
 ### USAGE
 ```
-bursts = extract_bursts(raw_trials, tf, times, search_freqs, band_lims, fooof_thresh, sfreq)
+bursts = extract_bursts(raw_trials, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq)
 ```
 
 ```
-bursts = extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, fooof_thresh, sfreq)
+bursts = extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, aperiodic_spectrum, sfreq)
 ```
 
 #### Arguments:

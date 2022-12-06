@@ -1,5 +1,5 @@
 function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
-    search_freqs, band_lims, fooof_thresh, sfreq, varargin)
+    search_freqs, band_lims, aperiodic_spectrum, sfreq, varargin)
 % EXTRACT_BURSTS_SINGLE_TRIAL  Extract bursts from epoched data
 %   raw_trials: raw data for trial (time)
 %   tf: time-frequency decomposition for trial (freq x time)
@@ -45,7 +45,7 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
     half_wlen = round(wlen * .5);
 
     % Subtract 1/f threshold
-    trial_tf = tf - repmat(fooof_thresh,1,size(tf,2));
+    trial_tf = tf - repmat(aperiodic_spectrum,1,size(tf,2));
     trial_tf(trial_tf < 0) = 0;
 
     % skip the thing if: see the
