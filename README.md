@@ -1,5 +1,9 @@
 # Burst Detection Algorithm - usage notes
 
+library accompanying the preprint "Diverse beta burst waveform motifs characterize movement-related cortical dynamics" 
+
+<https://www.biorxiv.org/content/10.1101/2022.12.13.520225v1>
+
 ## PYTHON
 
 ### DEPENDENCIES
