@@ -131,7 +131,7 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
             
             % Find local phase minima with negative deflection closest to TF peak
             % If no minimum is found, the error is caught and no burst is added
-            zero_phase_pts= findpeaks(-1*instantaneous_phase);
+            [~,zero_phase_pts]= findpeaks(-1*instantaneous_phase);
             if isempty(zero_phase_pts)
                 adjustment=inf;
             else
@@ -168,9 +168,9 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
                         bursts.waveform_times = times(new_peak_time_idx - half_wlen:new_peak_time_idx + half_wlen) - times(new_peak_time_idx);
 
                         % Flip if positive deflection
-                        peak_idxs= findpeaks(filtered);                        
+                        [~,peak_idxs]= findpeaks(filtered);                        
                         peak_dists = abs(peak_idxs - closest_pt);
-                        trough_idxs= findpeaks(-1*filtered);                        
+                        [~,trough_idxs]= findpeaks(-1*filtered);                        
                         trough_dists = abs(trough_idxs - closest_pt);
 
                         polarity=0;
