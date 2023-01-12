@@ -119,7 +119,7 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
             
             dc=mean(raw_signal);
             % Pad with 1s on either side
-            padded_data=[dc*ones(1, sfreq) repmat(dc, 1, sfreq) raw_signal repmat(dc, 1, sfreq)];
+            padded_data=[repmat(dc, 1, sfreq) raw_signal repmat(dc, 1, sfreq)];
             filtered = ft_preproc_bandpassfilter(padded_data, sfreq,...
                 search_freqs(freq_range), 6, 'but', 'twopass', 'reduce');       
             filtered=filtered(sfreq+1:sfreq+length(raw_signal));
