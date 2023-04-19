@@ -131,12 +131,12 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
             
             % Find local phase minima with negative deflection closest to TF peak
             % If no minimum is found, the error is caught and no burst is added
-            [~,zero_phase_pts]= findpeaks(-1*instantaneous_phase);
-            if isempty(zero_phase_pts)
+            [~,min_phase_pts]= findpeaks(-1*instantaneous_phase);
+            if isempty(min_phase_pts)
                 adjustment=inf;
             else
-                [~,min_idx]=min(abs((dur(2) - dur(1)) * .5 - zero_phase_pts));
-                closest_pt = zero_phase_pts(min_idx);
+                [~,min_idx]=min(abs((dur(2) - dur(1)) * .5 - min_phase_pts));
+                closest_pt = min_phase_pts(min_idx);
                 new_peak_time_idx = dur(1) + closest_pt;
                 adjustment = (new_peak_time_idx - peak_time_idx) * 1 / sfreq;
             end
