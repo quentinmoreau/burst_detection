@@ -178,19 +178,12 @@ def extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, a
 
         # If detected peak is within band limits and not degenerate
         if all([peak_freq >= band_lims[0], peak_freq <= band_lims[1], not hv_isnan]):
-            # Extract raw burst signal
-            dur = [
-                np.max([0, peak_time_idx - lloc]),
-                np.min([len(times), peak_time_idx + rloc])
-            ]
-            raw_signal = raw_trial[dur[0]:dur[1]].reshape(1, -1)
-
             # Bandpass filter within frequency range of burst
             freq_range = [
                 np.max([0, peak_freq_idx - dloc]),
                 np.min([len(search_freqs) - 1, peak_freq_idx + uloc])
             ]
-            filtered = filter_data(raw_signal, sfreq, search_freqs[freq_range[0]], search_freqs[freq_range[1]],
+            filtered = filter_data(raw_trial.reshape(1, -1), sfreq, search_freqs[freq_range[0]], search_freqs[freq_range[1]],
                                    verbose=False)
 
             # Hilbert transform
@@ -203,8 +196,7 @@ def extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, a
             min_phase_pts = argrelextrema(instantaneous_phase.T, np.less)[0]
             new_peak_time_idx = peak_time_idx
             try:
-                closest_pt = min_phase_pts[np.argmin(np.abs((dur[1] - dur[0]) * .5 - min_phase_pts))]
-                new_peak_time_idx = dur[0] + closest_pt
+                new_peak_time_idx = min_phase_pts[np.argmin(np.abs(peak_time_idx - min_phase_pts))]
                 adjustment = (new_peak_time_idx - peak_time_idx) * 1 / sfreq
             except:
                 adjustment = 1
@@ -235,8 +227,8 @@ def extract_bursts_single_trial(raw_trial, tf, times, search_freqs, band_lims, a
                                                    times[new_peak_time_idx]
 
                         # Flip if positive deflection
-                        peak_dists = np.abs(argrelextrema(filtered.T, np.greater)[0] - closest_pt)
-                        trough_dists = np.abs(argrelextrema(filtered.T, np.less)[0] - closest_pt)
+                        peak_dists = np.abs(argrelextrema(filtered.T, np.greater)[0] - new_peak_time_idx)
+                        trough_dists = np.abs(argrelextrema(filtered.T, np.less)[0] - new_peak_time_idx)
 
                         polarity = 0
                         if len(trough_dists) == 0 or (

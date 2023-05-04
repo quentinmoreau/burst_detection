@@ -108,22 +108,13 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
         new_trial_TF_iter = trial_tf_iter - z;
 
         if peak_freq>=band_lims(1) && peak_freq<=band_lims(2) && ~hv_isnan
-            % Extract raw burst signal
-            dur = [max([1, peak_time_idx - llec]),...
-                min([length(raw_trial), peak_time_idx + rloc])];
-            raw_signal = raw_trial(dur(1):dur(2));
-
             % Bandpass filter
             freq_range = [max([1, peak_freq_idx - dloc]),...
                 min([length(search_freqs) , peak_freq_idx + uloc])];
             
-            dc=mean(raw_signal);
-            % Pad with 1s on either side
-            padded_data=[repmat(dc, 1, sfreq) raw_signal repmat(dc, 1, sfreq)];
-            filtered = ft_preproc_bandpassfilter(padded_data, sfreq,...
+            filtered = ft_preproc_bandpassfilter(raw_trial, sfreq,...
                 search_freqs(freq_range), 6, 'but', 'twopass', 'reduce');       
-            filtered=filtered(sfreq+1:sfreq+length(raw_signal));
-            
+
             % Hilbert transform
             analytic_signal = hilbert(filtered);
             % Get phase
@@ -135,9 +126,8 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
             if isempty(min_phase_pts)
                 adjustment=inf;
             else
-                [~,min_idx]=min(abs((dur(2) - dur(1)) * .5 - min_phase_pts));
-                closest_pt = min_phase_pts(min_idx);
-                new_peak_time_idx = dur(1) + closest_pt;
+                [~,min_idx]=min(abs(peak_time_idx - min_phase_pts));
+                new_peak_time_idx = min_phase_pts(min_idx);
                 adjustment = (new_peak_time_idx - peak_time_idx) * 1 / sfreq;
             end
 
