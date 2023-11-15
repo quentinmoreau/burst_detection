@@ -159,9 +159,9 @@ function bursts=extract_bursts_single_trial(raw_trial, tf, times,...
 
                         % Flip if positive deflection
                         [~,peak_idxs]= findpeaks(filtered);                        
-                        peak_dists = abs(peak_idxs - closest_pt);
+                        peak_dists = abs(peak_idxs - new_peak_time_idx);
                         [~,trough_idxs]= findpeaks(-1*filtered);                        
-                        trough_dists = abs(trough_idxs - closest_pt);
+                        trough_dists = abs(trough_idxs - new_peak_time_idx);
 
                         polarity=0;
                         if isempty(trough_dists) || (~isempty(peak_dists) && min(peak_dists) < min(trough_dists))
